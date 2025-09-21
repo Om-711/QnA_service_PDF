@@ -8,8 +8,8 @@ import json
 from sentence_transformers import SentenceTransformer
 
 DATA_DIR = "E:\GenAI\QnA_pdf\pdf"
-INDEX_PATH = "E:\GenAI\QnA_pdf\Code_files\db\faiss_index.bin"
-IDS_PATH = "E:\GenAI\QnA_pdf\Code_files\db\ids.npy"
+INDEX_PATH = "db/faiss_index.bin"
+IDS_PATH = "db/ids.npy"
 
 
 
@@ -48,9 +48,9 @@ def chunk_text(text, max_len=500):
     return chunks
 
 def pdf(DATA_DIR):
-    create_db(r"E:\GenAI\QnA_pdf\db\database.db")
+    create_db(r"E:\GenAI\QnA_pdf\Code_files\db\database.db")
     count = 1
-    with sqlite3.connect(r"E:\GenAI\QnA_pdf\db\database.db", timeout=30) as conn:
+    with sqlite3.connect(r"E:\GenAI\QnA_pdf\Code_files\db\database.db", timeout=30) as conn:
         curr = conn.cursor()
         for pdf_file in Path(DATA_DIR).glob("*.pdf"):
 
@@ -120,6 +120,4 @@ def build_embeddings():
 
     conn.close()
     return ids, index, embed, model
-
-
 
