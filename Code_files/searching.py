@@ -15,7 +15,7 @@ def search(query, model, index, ids, k=10):
     top_idxs = indices[0]
     top_scores = scores[0]
 
-    conn = sqlite3.connect("E:\GenAI\QnA_pdf\db\database.db")
+    conn = sqlite3.connect("db/database.db")
     curr = conn.cursor()
     results = []
 
@@ -47,17 +47,9 @@ def search(query, model, index, ids, k=10):
     conn.close()
     return results
 
-def _minmax_norm(arr, eps=1e-12):
-    arr = np.array(arr, dtype=float)
-    mn = arr.min()
-    mx = arr.max()
-    if mx - mn < eps:
-        return np.zeros_like(arr)
-    return (arr - mn) / (mx - mn)
 
 
-
-def rerank(results, query, alpha=0.5):
+def rerank(results, query, alpha=0.6):
     if not results:
         return results
 
@@ -68,8 +60,8 @@ def rerank(results, query, alpha=0.5):
 
     vec_scores = np.array([r['vector_score'] for r in results], dtype=float)
 
-    vec_norm = _minmax_norm(vec_scores)
-    bm_norm = _minmax_norm(bm25_scores)
+    vec_norm = vec_scores
+    bm_norm = bm25_scores
 
     for i, r in enumerate(results):
         r['bm25_score'] = float(bm25_scores[i])
@@ -81,7 +73,9 @@ def rerank(results, query, alpha=0.5):
     return results
 
 
-def generate_answer(results, threshold=0.4):
+
+
+def generate_answer(results, threshold=0.5):
     # results must be sorted by final score if reranked; otherwise by vector_score
     if not results:
         return None
@@ -91,38 +85,13 @@ def generate_answer(results, threshold=0.4):
     # score_for_abstain = top["total_score"]
     score_for_abstain = top.get("total_score", top.get("vector_score", 0.0))
     
-    if score_for_abstain <= threshold:
-        return "I'm not confident enough to answer — the top score is below the threshold."
+    if score_for_abstain < threshold:
+        return None
     
-    snippet = top['text'].strip()
+    snippet = top['text'][:330].strip()
     
     citation = f"{top['source_title'] or top['doc_id']} (chunk: {top['chunk_id']})"
     
     return f"{snippet}\n\nSource: {citation}\nURL: {top['source_url']}"
 
 
-# import re
-
-# def generate_answer(results, query, threshold=0.4, snippet_len=330):
-#     if not results:
-#         return None
-
-#     top = results[0]
-#     score_for_abstain = top.get("total_score", top.get("vector_score", 0.0))
-
-#     if score_for_abstain < threshold:
-#         return "I'm not confident enough to answer — the top score is below the threshold."
-
-#     # Extract sentences containing query keywords
-#     query_terms = [q.lower() for q in query.split()]
-#     sentences = re.split(r'(?<=[.!?]) +', top['text'])
-#     relevant_sentences = [s for s in sentences if any(q in s.lower() for q in query_terms)]
-
-#     if relevant_sentences:
-#         snippet = " ".join(relevant_sentences)[:snippet_len].strip()
-#     else:
-#         snippet = top['text'][:snippet_len].strip()
-
-#     citation = f"{top['source_title'] or top['doc_id']} (chunk: {top['chunk_id']})"
-
-#     return f"{snippet}\n\nSource: {citation}\nURL: {top['source_url']}"
