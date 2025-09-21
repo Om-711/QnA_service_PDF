@@ -110,11 +110,10 @@ curl -X POST "http://localhost:8000/ask" \
 curl -X POST "http://localhost:8000/ask" \
      -H "Content-Type: application/json" \
      -d '{
-       "q": "What are the minimum safety distances for Category 3 safety systems with redundant monitoring and cross-checking capabilities?",
+       "q": "Do Industrial Robots Improve Workplace Safety",
        "k": 8,
        "mode": "rerank"
      }'
 ```
 
-**Ready to search your safety documents intelligently!**
 **Ready to search your safety documents intelligently!**
