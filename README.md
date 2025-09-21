@@ -115,6 +115,9 @@ curl -X POST "http://localhost:8000/ask" \
        "mode": "rerank"
      }'
 ```
-**Learning**
+
+
+**Learning**:
+
 I learned how to implement a reranker to improve search quality. By combining vector similarity with keyword-based scoring (BM25), the reranker promotes the most relevant document chunks to the top. This approach not only improves answer accuracy but also saves computation, because only the most relevant text is processed further while irrelevant content is ignored. Additionally, I gained experience in building a small, reproducible Q&A pipeline, including chunking PDFs, generating embeddings with a local model, and integrating an API for query handling. I also learned the importance of extractive answers with citations to maintain trustworthiness and compliance with assessment constraints.
 **Ready to search your safety documents intelligently!**
