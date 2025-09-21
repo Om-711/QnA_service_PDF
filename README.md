@@ -93,4 +93,28 @@ The system compares baseline vs hybrid search results on test questions and outp
 
 ---
 
+### cURL Examples
+
+**Simple question**:
+```bash
+curl -X POST "http://localhost:8000/ask" \
+     -H "Content-Type: application/json" \
+     -d '{
+        "q": "What is Industrial Robot?",
+         "k": 8,
+       "mode": "baseline"}'
+```
+
+**Complex safety query**:
+```bash
+curl -X POST "http://localhost:8000/ask" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "q": "What are the minimum safety distances for Category 3 safety systems with redundant monitoring and cross-checking capabilities?",
+       "k": 8,
+       "mode": "rerank"
+     }'
+```
+
+**Ready to search your safety documents intelligently!**
 **Ready to search your safety documents intelligently!**
